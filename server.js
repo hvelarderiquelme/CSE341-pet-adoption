@@ -2,17 +2,27 @@
 const dns = require("node:dns");
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
+//Requirements
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./swagger");
+
 //Libraries needed
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 
+
 //Modular settings
 const { connectDB } = require('./config/db');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+
+app.use(express.json());
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use("/shelters", require("./routes/shelters"));
+
 
 app.get('/', (req,res) => {
     res.status(200).json({
