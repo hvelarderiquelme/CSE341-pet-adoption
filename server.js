@@ -3,19 +3,19 @@ const dns = require("node:dns");
 dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 //Libraries needed
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const session = require('express-session');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const session = require("express-session");
 //const routers = require('./routes/pets');
 
 //Modular settings
-const { connectDB } = require('./config/db');
-const { setupSwagger } = require('./config/swagger');
+const { connectDB } = require("./config/db");
+const { setupSwagger } = require("./config/swagger");
 
 //Routes objects
-const petRoutes = require('./routes/petRoutes');
-const applicationRoutes = require('./routes/applicationRoutes');
+const petRoutes = require("./routes/petRoutes");
+const applicationRoutes = require("./routes/applicationRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -31,27 +31,28 @@ setupSwagger(app);
 //app.use('/', routes);
 
 //Application endpoint mappings
-app.use('/pets', petRoutes);
-app.use('/applications', applicationRoutes);
+app.use("/pets", petRoutes);
+app.use("/applications", applicationRoutes);
 
-app.get('/', (req,res) => {
-    res.status(200).json({
-        status: "Success",
-        message: "Welcome to the Pet Adoption API!",
-        documentation: "type /api-docs after the root url to access the documentation for this API." 
-    })
+app.get("/", (req, res) => {
+  res.status(200).json({
+    status: "Success",
+    message: "Welcome to the Pet Adoption API!",
+    documentation:
+      "type /api-docs after the root url to access the documentation for this API.",
+  });
 });
 
 //Start Server
 async function startServer() {
-    try {
-        await connectDB();//wait for db to connect sucessfully
-        app.listen(PORT, () => {
-            console.log(`Server is running on port: http://localhost:${PORT}`);
-        });
-    } catch (error) {
-        console.log("Failed to connect to the database");
-    }
-};
+  try {
+    await connectDB(); //wait for db to connect sucessfully
+    app.listen(PORT, () => {
+      console.log(`Server is running on port: http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.log("Failed to connect to the database");
+  }
+}
 
 startServer();

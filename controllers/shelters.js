@@ -19,7 +19,7 @@ const getOne = async (req, res) => {
     }
 
     const shelter = await collection().findOne({
-      _id: new ObjectId(req.params.id)
+      _id: new ObjectId(req.params.id),
     });
 
     if (!shelter) {
@@ -38,7 +38,7 @@ const create = async (req, res) => {
 
     return res.status(201).json({
       message: "Shelter created.",
-      id: result.insertedId
+      id: result.insertedId,
     });
   } catch (error) {
     return res.status(500).json({ message: "Unable to create shelter." });
@@ -53,7 +53,7 @@ const update = async (req, res) => {
 
     const result = await collection().replaceOne(
       { _id: new ObjectId(req.params.id) },
-      req.shelter
+      req.shelter,
     );
 
     if (result.matchedCount === 0) {
@@ -73,7 +73,7 @@ const remove = async (req, res) => {
     }
 
     const result = await collection().deleteOne({
-      _id: new ObjectId(req.params.id)
+      _id: new ObjectId(req.params.id),
     });
 
     if (result.deletedCount === 0) {

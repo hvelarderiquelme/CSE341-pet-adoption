@@ -1,23 +1,23 @@
-const {MongoClient} = require('mongodb');
+const { MongoClient } = require("mongodb");
 
 //Connect Node.js to MogoDB Atlas database cluster
 const client = new MongoClient(process.env.MONGODB_URI);
-const dbName = 'pet-adoption';
+const dbName = "pet-adoption";
 
 async function connectDB() {
   try {
-    await client.connect(); 
+    await client.connect();
     console.log(`Connected successfully to MongoDB Atlas database ${dbName}!`);
   } catch (error) {
     console.error(`Failed to connect to the database: ${dbName}`, error);
   }
-};
+}
 
 const getCollection = (collectionName) => {
-    return client.db(dbName).collection(collectionName);
-}
+  return client.db(dbName).collection(collectionName);
+};
 
 module.exports = {
-    connectDB,
-    getCollection
-}
+  connectDB,
+  getCollection,
+};
