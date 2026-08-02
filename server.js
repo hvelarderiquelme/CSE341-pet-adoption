@@ -42,6 +42,24 @@ app.get('/', (req,res) => {
     })
 });
 
+// 404 handler for unmatched routes
+app.use((req, res) => {
+    res.status(404).json({
+        status: "Error",
+        message: `Route ${req.originalUrl} not found`
+    });
+});
+
+// Centralized error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack || err);
+    const status = err.status || 500;
+    res.status(status).json({
+        status: "Error",
+        message: err.message || "Internal Server Error"
+    });
+});
+
 //Start Server
 async function startServer() {
     try {
