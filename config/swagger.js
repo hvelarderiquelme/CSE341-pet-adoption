@@ -21,13 +21,17 @@ const swaggerOptions = {
         description: 'Operations and endpoints related to managing the pets inventory'
       },
       {
+        name: 'Adopters',
+        description: 'Operations and endpoints related to managing adopters'
+      },
+      {
         name: 'Applications',
         description: 'Operations and endpoints related to managing applications to adopt pets'
       }
     ],
     servers: [
       {
-        url: '/', 
+        url: '/',
         description: 'Current environment',
       },
     ],
@@ -40,7 +44,7 @@ const swaggerOptions = {
   },
   // We can leave this empty since paths are manually loaded via JSON modules above
   // apis: [], 
-  apis: []
+  apis: ['./routes/pets.js', './routes/adoptersRoutes.js']
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);
