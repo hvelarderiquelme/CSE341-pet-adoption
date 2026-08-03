@@ -1,3 +1,4 @@
+require('dotenv').config();
 const {MongoClient} = require('mongodb');
 
 //Connect Node.js to MogoDB Atlas database cluster
