@@ -2,28 +2,13 @@ const express = require("express");
 const { body, validationResult } = require("express-validator");
 const shelters = require("../controllers/shelters");
 
+
 const router = express.Router();
 
-const validateShelter = [
-  body("name").trim().notEmpty().withMessage("Name is required."),
-  body("address").trim().notEmpty().withMessage("Address is required."),
-  body("city").trim().notEmpty().withMessage("City is required."),
-  body("state").trim().notEmpty().withMessage("State is required."),
-  body("zipCode").trim().notEmpty().withMessage("Zip code is required."),
-  body("phone").trim().notEmpty().withMessage("Phone is required."),
-  body("email").isEmail().withMessage("A valid email is required."),
-  body("capacity")
-    .isInt({ min: 0 })
-    .withMessage("Capacity must be a whole number of 0 or greater."),
-  body("currentAnimals")
-    .isInt({ min: 0 })
-    .withMessage("Current animals must be a whole number of 0 or greater."),
-  body("acceptingAnimals")
-    .trim()
-    .notEmpty()
-    .withMessage("Accepting animals is required."),
+const validate = (validations) => {
+  return async (req, res, next) => {
+    await Promise.all(validations.map((validation) => validation.run(req)));
 
-  (req, res, next) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -33,22 +18,45 @@ const validateShelter = [
       });
     }
 
+    // This is what the shelter controller inserts or replaces.
     req.shelter = {
-      name: req.body.name,
-      address: req.body.address,
-      city: req.body.city,
-      state: req.body.state,
-      zipCode: req.body.zipCode,
-      phone: req.body.phone,
-      email: req.body.email,
+      name: req.body.name.trim(),
+      address: req.body.address.trim(),
+      city: req.body.city.trim(),
+      state: req.body.state.trim(),
+      zipCode: req.body.zipCode.trim(),
+      phone: req.body.phone.trim(),
+      email: req.body.email.trim(),
       capacity: Number(req.body.capacity),
       currentAnimals: Number(req.body.currentAnimals),
-      acceptingAnimals: req.body.acceptingAnimals
+      acceptingAnimals: req.body.acceptingAnimals.trim()
     };
 
     return next();
-  }
+  };
+};
+
+const shelterValidationRules = [
+  body("name").trim().notEmpty().withMessage("Name is required."),
+  body("address").trim().notEmpty().withMessage("Address is required."),
+  body("city").trim().notEmpty().withMessage("City is required."),
+  body("state").trim().notEmpty().withMessage("State is required."),
+  body("zipCode").trim().notEmpty().withMessage("Zip code is required."),
+  body("phone").trim().notEmpty().withMessage("Phone is required."),
+  body("email").trim().isEmail().withMessage("A valid email is required."),
+  body("capacity")
+    .isInt({ min: 0 })
+    .withMessage("Capacity must be a whole number of 0 or greater."),
+  body("currentAnimals")
+    .isInt({ min: 0 })
+    .withMessage("Current animals must be a whole number of 0 or greater."),
+  body("acceptingAnimals")
+    .trim()
+    .notEmpty()
+    .withMessage("Accepting animals is required.")
 ];
+
+const validateShelter = validate(shelterValidationRules);
 
 /**
  * @swagger

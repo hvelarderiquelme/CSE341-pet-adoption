@@ -4,9 +4,8 @@
       "tags": ["Shelters"],
       "summary": "Get all shelters",
       "responses": {
-        "200": {
-          "description": "List of shelters"
-        }
+        "200": { "description": "List of shelters" },
+        "500": { "description": "Server error" }
       }
     },
     "post": {
@@ -42,13 +41,26 @@
                 "currentAnimals": { "type": "integer" },
                 "acceptingAnimals": { "type": "string" }
               }
+            },
+            "example": {
+              "name": "Happy Tails Shelter",
+              "address": "123 Main Street",
+              "city": "Rexburg",
+              "state": "ID",
+              "zipCode": "83440",
+              "phone": "208-555-0142",
+              "email": "info@happytails.example",
+              "capacity": 60,
+              "currentAnimals": 35,
+              "acceptingAnimals": "Yes"
             }
           }
         }
       },
       "responses": {
         "201": { "description": "Shelter created" },
-        "400": { "description": "Validation failed" }
+        "400": { "description": "Validation failed" },
+        "500": { "description": "Server error" }
       }
     }
   },
@@ -66,7 +78,9 @@
       ],
       "responses": {
         "200": { "description": "Shelter found" },
-        "404": { "description": "Shelter not found" }
+        "400": { "description": "Invalid shelter ID" },
+        "404": { "description": "Shelter not found" },
+        "500": { "description": "Server error" }
       }
     },
     "put": {
@@ -80,10 +94,57 @@
           "schema": { "type": "string" }
         }
       ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "address",
+                "city",
+                "state",
+                "zipCode",
+                "phone",
+                "email",
+                "capacity",
+                "currentAnimals",
+                "acceptingAnimals"
+              ],
+              "properties": {
+                "name": { "type": "string" },
+                "address": { "type": "string" },
+                "city": { "type": "string" },
+                "state": { "type": "string" },
+                "zipCode": { "type": "string" },
+                "phone": { "type": "string" },
+                "email": { "type": "string" },
+                "capacity": { "type": "integer" },
+                "currentAnimals": { "type": "integer" },
+                "acceptingAnimals": { "type": "string" }
+              }
+            },
+            "example": {
+              "name": "Happy Tails Shelter",
+              "address": "123 Main Street",
+              "city": "Rexburg",
+              "state": "ID",
+              "zipCode": "83440",
+              "phone": "208-555-0142",
+              "email": "info@happytails.example",
+              "capacity": 60,
+              "currentAnimals": 35,
+              "acceptingAnimals": "Yes"
+            }
+          }
+        }
+      },
       "responses": {
         "204": { "description": "Shelter updated" },
-        "400": { "description": "Validation failed" },
-        "404": { "description": "Shelter not found" }
+        "400": { "description": "Validation failed or invalid shelter ID" },
+        "404": { "description": "Shelter not found" },
+        "500": { "description": "Server error" }
       }
     },
     "delete": {
@@ -99,7 +160,9 @@
       ],
       "responses": {
         "204": { "description": "Shelter deleted" },
-        "404": { "description": "Shelter not found" }
+        "400": { "description": "Invalid shelter ID" },
+        "404": { "description": "Shelter not found" },
+        "500": { "description": "Server error" }
       }
     }
   }

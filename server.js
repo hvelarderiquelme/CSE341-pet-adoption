@@ -7,7 +7,8 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
-//const routers = require('./routes/pets');
+const routers = require('./routes/pets');
+const shelterRoutes = require("./routes/shelters");
 
 //Modular settings
 const { connectDB } = require('./config/db');
@@ -28,7 +29,9 @@ app.use(express.json());
 //Initialize documentation modules
 setupSwagger(app);
 
-//app.use('/', routes);
+app.use(cors());
+app.use(express.json());
+app.use("/shelters", shelterRoutes);
 
 //Application endpoint mappings
 app.use('/pets', petRoutes);
