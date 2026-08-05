@@ -2,6 +2,8 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 const { getCollection } = require('../config/db');
 const { requireAuth } = require('../middleware/requireAuth');
+const { adopterValidationRules } = require('../middleware/adopterValidationRules');
+const { validatePayload } = require('../middleware/validate');
 const router = express.Router();
 
 // Endpoint: Get. Get all records
@@ -38,7 +40,12 @@ router.get('/:id', async(req,res) => {
 });
 
 //Endpoint: POST. Create a new record
-router.post('/', requireAuth,async(req,res) => { 
+router.post('/', 
+    requireAuth, 
+    adopterValidationRules, 
+    validatePayload,
+    async(req,res) => { 
+
     try{
         //grab all the info
         const adopter = req.body;
@@ -61,9 +68,18 @@ router.post('/', requireAuth,async(req,res) => {
 });
 
 //Endpoint: PUT. Update a record by id
-router.put('/:id', requireAuth,async(req,res) => {
+router.put('/:id', 
+    requireAuth,
+    adopterValidationRules,
+    validatePayload,
+    async(req,res) => {
     //grab the id from the body
     const { id } = req.params;
+
+    if(!ObjectId.isValid(id)){
+        return res.status(400).json({error: 'Invalid ID format.'});
+    }
+
     try{
         //call the database
         const collection = getCollection('adopter');
