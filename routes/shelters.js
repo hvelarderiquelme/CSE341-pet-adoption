@@ -4,6 +4,7 @@ const shelters = require("../controllers/shelters");
 
 
 const router = express.Router();
+const { isAuthenticated } = require('../middleware/auth');
 
 const validate = (validations) => {
   return async (req, res, next) => {
@@ -93,23 +94,29 @@ router.get("/:id", shelters.getOne);
  * /shelters:
  *   post:
  *     summary: Create a shelter
+ *     security:
+ *       - GoogleOAuth: [profile, email]
  */
-router.post("/", validateShelter, shelters.create);
+router.post("/", isAuthenticated, validateShelter, shelters.create);
 
 /**
  * @swagger
  * /shelters/{id}:
  *   put:
  *     summary: Update a shelter
+ *     security:
+ *       - GoogleOAuth: [profile, email]
  */
-router.put("/:id", validateShelter, shelters.update);
+router.put("/:id", isAuthenticated, validateShelter, shelters.update);
 
 /**
  * @swagger
  * /shelters/{id}:
  *   delete:
  *     summary: Delete a shelter
+ *     security:
+ *       - GoogleOAuth: [profile, email]
  */
-router.delete("/:id", shelters.remove);
+router.delete("/:id", isAuthenticated, shelters.remove);
 
 module.exports = router;

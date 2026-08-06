@@ -9,6 +9,7 @@ const { celebrate, Segments } = require('celebrate');
 const adoptersBodySchema = require('../models/adoptersModel');
 const adoptersController = require("../controllers/adoptersController");
 const router = require('express').Router();
+const { isAuthenticated } = require('../middleware/auth');
 
 const validateAdopterBody = celebrate({
     [Segments.BODY]: adoptersBodySchema,
@@ -84,6 +85,8 @@ router.post('/adopters', validateAdopterBody, (req, res) => {
  *   put:
  *     summary: Update an adopter
  *     tags: [Adopters]
+ *     security:
+ *       - GoogleOAuth: [profile, email]
  *     parameters:
  *       - in: path
  *         name: id
@@ -102,7 +105,7 @@ router.post('/adopters', validateAdopterBody, (req, res) => {
  *       404:
  *         description: Adopter not found
  */
-router.put('/adopters/:id', validateAdopterBody, (req, res) => {
+router.put('/adopters/:id', isAuthenticated, validateAdopterBody, (req, res) => {
     return adoptersController.editAdopter(req, res);
 });
 
@@ -112,6 +115,8 @@ router.put('/adopters/:id', validateAdopterBody, (req, res) => {
  *   delete:
  *     summary: Delete an adopter
  *     tags: [Adopters]
+ *     security:
+ *       - GoogleOAuth: [profile, email]
  *     parameters:
  *       - in: path
  *         name: id
@@ -124,7 +129,7 @@ router.put('/adopters/:id', validateAdopterBody, (req, res) => {
  *       404:
  *         description: Adopter not found
  */
-router.delete('/adopters/:id', (req, res) => {
+router.delete('/adopters/:id', isAuthenticated, (req, res) => {
     return adoptersController.deleteAdopter(req, res);
 });
 

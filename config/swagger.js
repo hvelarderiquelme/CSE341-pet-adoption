@@ -6,14 +6,32 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const applicationsDocs = require('../docs/applications.json');
 const petDocs = require('../docs/pets.json');
 const sheltersDocs = require("../docs/shelters.json");
+const adoptersDocs = require('../docs/adopters.json');
 
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Contacts API',
+      title: 'Pet Adoption API',
       version: '1.0.0',
-      description: 'Interactive API documentation for managing contacts',
+      description: 'Interactive API documentation for the Pet Adoption API',
+    },
+    components: {
+      securitySchemes: {
+        GoogleOAuth: {
+          type: 'oauth2',
+          flows: {
+            authorizationCode: {
+              authorizationUrl: process.env.GOOGLE_OAUTH_AUTH_URL || 'https://accounts.google.com/o/oauth2/v2/auth',
+              tokenUrl: process.env.GOOGLE_OAUTH_TOKEN_URL || 'https://oauth2.googleapis.com/token',
+              scopes: {
+                profile: 'Read profile information',
+                email: 'Read email address'
+              }
+            }
+          }
+        }
+      }
     },
     tags: [
       {
@@ -39,12 +57,13 @@ const swaggerOptions = {
     paths: {
       ...petDocs,
       ...applicationsDocs,
-      ...sheltersDocs
+      ...sheltersDocs,
+      ...adoptersDocs
     }
   },
   // We can leave this empty since paths are manually loaded via JSON modules above
   // apis: [], 
-  apis: ['./routes/pets.js', './routes/adoptersRoutes.js']
+  apis: ['./routes/pets.js', './routes/adoptersRoutes.js', './routes/shelters.js', './routes/applicationRoutes.js', './routes/auth.js']
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);

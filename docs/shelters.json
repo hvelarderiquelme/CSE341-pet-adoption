@@ -1,16 +1,32 @@
 {
   "/shelters": {
     "get": {
-      "tags": ["Shelters"],
+      "tags": [
+        "Shelters"
+      ],
       "summary": "Get all shelters",
       "responses": {
-        "200": { "description": "List of shelters" },
-        "500": { "description": "Server error" }
+        "200": {
+          "description": "List of shelters"
+        },
+        "500": {
+          "description": "Server error"
+        }
       }
     },
     "post": {
-      "tags": ["Shelters"],
+      "tags": [
+        "Shelters"
+      ],
       "summary": "Create a shelter",
+      "security": [
+        {
+          "GoogleOAuth": [
+            "profile",
+            "email"
+          ]
+        }
+      ],
       "requestBody": {
         "required": true,
         "content": {
@@ -30,16 +46,36 @@
                 "acceptingAnimals"
               ],
               "properties": {
-                "name": { "type": "string" },
-                "address": { "type": "string" },
-                "city": { "type": "string" },
-                "state": { "type": "string" },
-                "zipCode": { "type": "string" },
-                "phone": { "type": "string" },
-                "email": { "type": "string" },
-                "capacity": { "type": "integer" },
-                "currentAnimals": { "type": "integer" },
-                "acceptingAnimals": { "type": "string" }
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "zipCode": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "capacity": {
+                  "type": "integer"
+                },
+                "currentAnimals": {
+                  "type": "integer"
+                },
+                "acceptingAnimals": {
+                  "type": "string"
+                }
               }
             },
             "example": {
@@ -58,40 +94,70 @@
         }
       },
       "responses": {
-        "201": { "description": "Shelter created" },
-        "400": { "description": "Validation failed" },
-        "500": { "description": "Server error" }
+        "201": {
+          "description": "Shelter created"
+        },
+        "400": {
+          "description": "Validation failed"
+        },
+        "500": {
+          "description": "Server error"
+        }
       }
     }
   },
   "/shelters/{id}": {
     "get": {
-      "tags": ["Shelters"],
+      "tags": [
+        "Shelters"
+      ],
       "summary": "Get one shelter by ID",
       "parameters": [
         {
           "in": "path",
           "name": "id",
           "required": true,
-          "schema": { "type": "string" }
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "responses": {
-        "200": { "description": "Shelter found" },
-        "400": { "description": "Invalid shelter ID" },
-        "404": { "description": "Shelter not found" },
-        "500": { "description": "Server error" }
+        "200": {
+          "description": "Shelter found"
+        },
+        "400": {
+          "description": "Invalid shelter ID"
+        },
+        "404": {
+          "description": "Shelter not found"
+        },
+        "500": {
+          "description": "Server error"
+        }
       }
     },
     "put": {
-      "tags": ["Shelters"],
+      "tags": [
+        "Shelters"
+      ],
       "summary": "Update a shelter",
+      "security": [
+        {
+          "GoogleOAuth": [
+            "profile",
+            "email"
+          ]
+        }
+      ],
       "parameters": [
         {
           "in": "path",
           "name": "id",
           "required": true,
-          "schema": { "type": "string" }
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "requestBody": {
@@ -113,16 +179,36 @@
                 "acceptingAnimals"
               ],
               "properties": {
-                "name": { "type": "string" },
-                "address": { "type": "string" },
-                "city": { "type": "string" },
-                "state": { "type": "string" },
-                "zipCode": { "type": "string" },
-                "phone": { "type": "string" },
-                "email": { "type": "string" },
-                "capacity": { "type": "integer" },
-                "currentAnimals": { "type": "integer" },
-                "acceptingAnimals": { "type": "string" }
+                "name": {
+                  "type": "string"
+                },
+                "address": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "zipCode": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "capacity": {
+                  "type": "integer"
+                },
+                "currentAnimals": {
+                  "type": "integer"
+                },
+                "acceptingAnimals": {
+                  "type": "string"
+                }
               }
             },
             "example": {
@@ -141,28 +227,56 @@
         }
       },
       "responses": {
-        "204": { "description": "Shelter updated" },
-        "400": { "description": "Validation failed or invalid shelter ID" },
-        "404": { "description": "Shelter not found" },
-        "500": { "description": "Server error" }
+        "204": {
+          "description": "Shelter updated"
+        },
+        "400": {
+          "description": "Validation failed or invalid shelter ID"
+        },
+        "404": {
+          "description": "Shelter not found"
+        },
+        "500": {
+          "description": "Server error"
+        }
       }
     },
     "delete": {
-      "tags": ["Shelters"],
+      "tags": [
+        "Shelters"
+      ],
       "summary": "Delete a shelter",
+      "security": [
+        {
+          "GoogleOAuth": [
+            "profile",
+            "email"
+          ]
+        }
+      ],
       "parameters": [
         {
           "in": "path",
           "name": "id",
           "required": true,
-          "schema": { "type": "string" }
+          "schema": {
+            "type": "string"
+          }
         }
       ],
       "responses": {
-        "204": { "description": "Shelter deleted" },
-        "400": { "description": "Invalid shelter ID" },
-        "404": { "description": "Shelter not found" },
-        "500": { "description": "Server error" }
+        "204": {
+          "description": "Shelter deleted"
+        },
+        "400": {
+          "description": "Invalid shelter ID"
+        },
+        "404": {
+          "description": "Shelter not found"
+        },
+        "500": {
+          "description": "Server error"
+        }
       }
     }
   }

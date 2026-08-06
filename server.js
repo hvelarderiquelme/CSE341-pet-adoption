@@ -7,6 +7,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const passport = require('passport');
 const routers = require('./routes/pets');
 const shelterRoutes = require("./routes/shelters");
 
@@ -17,6 +18,7 @@ const { setupSwagger } = require('./config/swagger');
 //Routes objects
 const petRoutes = require('./routes/petRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -25,6 +27,30 @@ const PORT = process.env.PORT || 8080;
 
 app.use(cors());
 app.use(express.json());
+
+// Session and Passport (for OAuth)
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'keyboard cat',
+    resave: false,
+    saveUninitialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Configure Passport strategies
+const configurePassport = require('./middleware/auth-setup');
+configurePassport();
+
+// Auth routes
+app.use('/', authRoutes);
+
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'default_secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Set to true if using HTTPS
+}));
 
 //Initialize documentation modules
 setupSwagger(app);

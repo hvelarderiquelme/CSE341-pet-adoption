@@ -61,6 +61,8 @@ router.get('/pets/:id', (req, res) => {
  *   post:
  *     summary: Create a pet
  *     tags: [Pets]
+ *     security:
+ *       - GoogleOAuth: [profile, email]
  *     requestBody:
  *       required: true
  *       content:
@@ -84,6 +86,8 @@ router.post('/pets', validatePetBody, (req, res) => {
  *   put:
  *     summary: Update a pet
  *     tags: [Pets]
+ *     security:
+ *       - GoogleOAuth: [profile, email]
  *     parameters:
  *       - in: path
  *         name: id
@@ -112,6 +116,8 @@ router.put('/pets/:id', validatePetBody, (req, res) => {
  *   delete:
  *     summary: Delete a pet
  *     tags: [Pets]
+ *     security:
+ *       - GoogleOAuth: [profile, email]
  *     parameters:
  *       - in: path
  *         name: id
