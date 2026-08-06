@@ -1,7 +1,7 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const shelters = require("../controllers/shelters");
-
+// const ensureAuthenticated = require("../middleware/authenticate");
 
 const router = express.Router();
 
@@ -18,18 +18,22 @@ const validate = (validations) => {
       });
     }
 
-    // This is what the shelter controller inserts or replaces.
     req.shelter = {
       name: req.body.name.trim(),
-      address: req.body.address.trim(),
-      city: req.body.city.trim(),
-      state: req.body.state.trim(),
-      zipCode: req.body.zipCode.trim(),
+      location: {
+        address: req.body.location.address.trim(),
+        city: req.body.location.city.trim(),
+        state: req.body.location.state.trim(),
+        postal_code: req.body.location.postal_code.trim()
+      },
       phone: req.body.phone.trim(),
       email: req.body.email.trim(),
+      website: req.body.website.trim(),
       capacity: Number(req.body.capacity),
-      currentAnimals: Number(req.body.currentAnimals),
-      acceptingAnimals: req.body.acceptingAnimals.trim()
+      operating_hours: {
+        weekday: req.body.operating_hours.weekday.trim(),
+        weekend: req.body.operating_hours.weekend.trim()
+      }
     };
 
     return next();
@@ -38,23 +42,51 @@ const validate = (validations) => {
 
 const shelterValidationRules = [
   body("name").trim().notEmpty().withMessage("Name is required."),
-  body("address").trim().notEmpty().withMessage("Address is required."),
-  body("city").trim().notEmpty().withMessage("City is required."),
-  body("state").trim().notEmpty().withMessage("State is required."),
-  body("zipCode").trim().notEmpty().withMessage("Zip code is required."),
+
+  body("location.address")
+    .trim()
+    .notEmpty()
+    .withMessage("Location address is required."),
+
+  body("location.city")
+    .trim()
+    .notEmpty()
+    .withMessage("Location city is required."),
+
+  body("location.state")
+    .trim()
+    .notEmpty()
+    .withMessage("Location state is required."),
+
+  body("location.postal_code")
+    .trim()
+    .notEmpty()
+    .withMessage("Location postal code is required."),
+
   body("phone").trim().notEmpty().withMessage("Phone is required."),
+
   body("email").trim().isEmail().withMessage("A valid email is required."),
+
+  body("website")
+    .trim()
+    .isURL()
+    .withMessage("A valid website URL is required."),
+
   body("capacity")
     .isInt({ min: 0 })
     .withMessage("Capacity must be a whole number of 0 or greater."),
-  body("currentAnimals")
-    .isInt({ min: 0 })
-    .withMessage("Current animals must be a whole number of 0 or greater."),
-  body("acceptingAnimals")
+
+  body("operating_hours.weekday")
     .trim()
     .notEmpty()
-    .withMessage("Accepting animals is required.")
+    .withMessage("Weekday operating hours are required."),
+
+  body("operating_hours.weekend")
+    .trim()
+    .notEmpty()
+    .withMessage("Weekend operating hours are required.")
 ];
+
 
 const validateShelter = validate(shelterValidationRules);
 

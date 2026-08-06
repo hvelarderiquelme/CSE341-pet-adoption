@@ -6,6 +6,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const applicationsDocs = require('../docs/applications.json');
 const petDocs = require('../docs/pets.json');
 const sheltersDocs = require("../docs/shelters.json");
+const adoptersDocs = require('../docs/adopters.json');
 
 const swaggerOptions = {
   definition: {
@@ -35,7 +36,8 @@ const swaggerOptions = {
     paths: {
       ...petDocs,
       ...applicationsDocs,
-      ...sheltersDocs
+      ...sheltersDocs,
+      ...adoptersDocs
     }
   },
   // We can leave this empty since paths are manually loaded via JSON modules above

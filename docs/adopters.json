@@ -1,0 +1,315 @@
+{
+  "/adopters": {
+    "get": {
+      "tags": ["Adopters"],
+      "summary": "Get all adopter profiles",
+      "description": "Retrieve a standard array of all adopter documents from the database.",
+      "responses": {
+        "200": {
+          "description": "A list of adopters."
+        },
+        "500": {
+          "description": "Database error."
+        }
+      }
+    },
+    "post": {
+      "tags": ["Adopters"],
+      "summary": "Register a new adopter profile",
+      "description": "Inserts a new adopter document into the MongoDB collection. Requires authentication.",
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["first_name", "last_name", "email", "phone", "location", "preferences", "household_info"],
+              "properties": {
+                "first_name": {
+                  "type": "string",
+                  "example": "John"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "john.doe@example.com"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "403-555-0411"
+                },
+                "location": {
+                  "type": "object",
+                  "required": ["city", "state", "postal_code"],
+                  "properties": {
+                    "city": {
+                      "type": "string",
+                      "example": "Medicine Hat"
+                    },
+                    "state": {
+                      "type": "string",
+                      "example": "AB"
+                },
+                    "postal_code": {
+                      "type": "string",
+                      "example": "T1B 2X2",
+                      "pattern": "^[A-Z]\\d[A-Z] \\d[A-Z]\\d$"
+                    }
+                  }
+                },
+                "preferences": {
+                  "type": "object",
+                  "required": ["preferred_species", "preferred_size", "max_age"],
+                  "properties": {
+                    "preferred_species": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": ["Dog"]
+                    },
+                    "preferred_size": {
+                      "type": "string",
+                      "example": "Large"
+                    },
+                    "max_age": {
+                      "type": "integer",
+                      "example": 5
+                    }
+                  }
+                },
+                "household_info": {
+                  "type": "object",
+                  "required": ["housing_type", "has_yard", "has_other_pets", "has_children"],
+                  "properties": {
+                    "housing_type": {
+                      "type": "string",
+                      "example": "House"
+                    },
+                    "has_yard": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "has_other_pets": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "has_children": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Adopter profile registered successfully."
+        },
+        "400": {
+          "description": "Missing required fields or invalid payload parameters."
+        },
+        "401": {
+          "description": "Unauthorized. GitHub login required."
+        },
+        "500": {
+          "description": "Database insertion failed."
+        }
+      }
+    }
+  },
+  "/adopters/{id}": {
+    "get": {
+      "tags": ["Adopters"],
+      "summary": "Get a single adopter by ID",
+      "description": "Search the database for a matching unique adopter _id record.",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "The unique 24-character MongoDB Object ID of the adopter",
+          "example": "6a64f155606e759639e960ab"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Adopter object found."
+        },
+        "404": {
+          "description": "Adopter not found."
+        },
+        "500": {
+          "description": "Invalid ID format or server error."
+        }
+      }
+    },
+    "put": {
+      "tags": ["Adopters"],
+      "summary": "Update adopter record",
+      "description": "Updates an adopter document in the MongoDB collection. Requires authentication.",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "The unique 24-character MongoDB ObjectId of the adopter",
+          "example": "6a64f155606e759639e960ab"
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": ["first_name", "last_name", "email", "phone", "location", "preferences", "household_info"],
+              "properties": {
+                "first_name": {
+                  "type": "string",
+                  "example": "John"
+                },
+                "last_name": {
+                  "type": "string",
+                  "example": "Doe"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "john.doe@example.com"
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "403-555-0411"
+                },
+                "location": {
+                  "type": "object",
+                  "required": ["city", "state", "postal_code"],
+                  "properties": {
+                    "city": {
+                      "type": "string",
+                      "example": "Medicine Hat"
+                    },
+                    "state": {
+                      "type": "string",
+                      "example": "AB"
+                    },
+                    "postal_code": {
+                      "type": "string",
+                      "example": "T1B 2X2",
+                      "pattern": "^[A-Z]\\d[A-Z] \\d[A-Z]\\d$"
+                    }
+                  }
+                },
+                "preferences": {
+                  "type": "object",
+                  "required": ["preferred_species", "preferred_size", "max_age"],
+                  "properties": {
+                    "preferred_species": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "example": ["Dog"]
+                    },
+                    "preferred_size": {
+                      "type": "string",
+                      "example": "Large"
+                    },
+                    "max_age": {
+                      "type": "integer",
+                      "example": 5
+                    }
+                  }
+                },
+                "household_info": {
+                  "type": "object",
+                  "required": ["housing_type", "has_yard", "has_other_pets", "has_children"],
+                  "properties": {
+                    "housing_type": {
+                      "type": "string",
+                      "example": "House"
+                    },
+                    "has_yard": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "has_other_pets": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "has_children": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Adopter updated successfully."
+        },
+        "400": {
+          "description": "Invalid ID format or missing required fields."
+        },
+        "401": {
+          "description": "Unauthorized. GitHub login required."
+        },
+        "500": {
+          "description": "Database update failed."
+        }
+      }
+    },
+    "delete": {
+      "tags": ["Adopters"],
+      "summary": "Delete an adopter record by ID",
+      "description": "Permanently deletes an adopter document from the MongoDB collection. Requires authentication.",
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "The unique 24-character MongoDB ObjectId of the adopter to delete",
+          "example": "6a64f155606e759639e960ab"
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Adopter successfully deleted."
+        },
+        "400": {
+          "description": "Invalid ID format."
+        },
+        "401": {
+          "description": "Unauthorized. GitHub login required."
+        },
+        "404": {
+          "description": "Adopter record not found."
+        },
+        "500": {
+          "description": "Database deletion failed."
+        }
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@ const express = require('express');
 const { ObjectId } = require('mongodb');
 const{ getCollection } = require('../config/db');
 const router = express.Router();
-//const { requireAuth } = require('../middleware/requireAuth');
+const { requireAuth } = require('../middleware/requireAuth');
 //const { bookValidationRules } = require('../middleware/bookValidationRules');
 //const { validatePayload } = require('../middleware/validate');
 
@@ -47,7 +47,7 @@ router.get('/:id', async (req, res) => {
 });
 
 //End point POST: Create a new pet document in the collection
-router.post('/', async(req,res) => {
+router.post('/', requireAuth, async(req,res) => {
     try{
         //calls the pets collection
         const petsCollection = getCollection('pets');
@@ -66,7 +66,7 @@ router.post('/', async(req,res) => {
 });
 
 //Endpoint: PUT. Update an existing record
-router.put('/:id', async(req,res) => {
+router.put('/:id', requireAuth, async(req,res) => {
     const {id} = req.params;
     try{
         //call the collection
@@ -87,7 +87,7 @@ router.put('/:id', async(req,res) => {
 });
 
 //Endpoint: DELETE. Delete a record from the database
-router.delete('/:id', async(req,res) => {
+router.delete('/:id', requireAuth, async(req,res) => {
     const { id } = req.params;
     try{
         //call the database

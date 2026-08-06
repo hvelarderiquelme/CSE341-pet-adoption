@@ -8,10 +8,10 @@ const router = express.Router();
 router.get('/', async (req,res) => {
     try{
         //call the database
-        const collection = getCollection('applications');
-        //Find all documents and convert tem into a standard JavaScxript array
-        const allApplications = await collection.find({}).toArray();
-        res.json(allApplications);
+        const collection = getCollection('adopter');
+        //Find all documents and convert them into a standard JavaScxript array
+        const allAdopters = await collection.find({}).toArray();
+        res.json(allAdopters);
     }catch(error){
         res.status(500).send('Error pulling data from the database');
     }
@@ -22,18 +22,18 @@ router.get('/:id', async(req,res) => {
     const { id } = req.params;
     try{
         //calling the database
-        const collection = getCollection('applications');
+        const collection = getCollection('adopter');
 
         //Find the specific record with a matching id
-        const singleApplication = await collection.findOne({_id: new ObjectId(id)});
-        if(!singleApplication){
+        const oneAdopter = await collection.findOne({_id: new ObjectId(id)});
+        if(!oneAdopter){
             return res.status(404).send('Record not found');
         }
 
-        res.json(singleApplication);
+        res.json(oneAdopter);
 
     }catch(error){
-        res.status(500).send('Application ID is formatted incorrectly or does not exist')
+        res.status(500).send('Adopter ID is formatted incorrectly or does not exist')
     }
 });
 
@@ -41,14 +41,14 @@ router.get('/:id', async(req,res) => {
 router.post('/', requireAuth,async(req,res) => { 
     try{
         //grab all the info
-        const application = req.body;
+        const adopter = req.body;
         //call database
-        const collection = getCollection('applications');
+        const collection = getCollection('adopter');
         //insert the data into a new row
-        const result = await collection.insertOne(application);
+        const result = await collection.insertOne(adopter);
         //returns the id of teh record
         return res.status(201).json({
-            message: 'Record created successfully',
+            message: 'Record created successfully.',
             id: result.insertedId
         });
 
@@ -66,7 +66,7 @@ router.put('/:id', requireAuth,async(req,res) => {
     const { id } = req.params;
     try{
         //call the database
-        const collection = getCollection('applications');
+        const collection = getCollection('adopter');
         //update record
         const result = await collection.updateOne(
             {_id: new ObjectId(id)},
@@ -74,10 +74,10 @@ router.put('/:id', requireAuth,async(req,res) => {
             );
         //check if document was found
         if(result.matchedCount === 0){
-            return res.status(404).json({error: 'Record not found'});
+            return res.status(404).json({error: 'Record not found.'});
         }    
         //return success message
-        return res.status(200).json({ message: 'Record created successfully.'});
+        return res.status(200).json({ message: 'Record updated successfully.'});
     }catch(error){
         return res.status(500).json({error:'Database saving failed.', details: error.message});
     }
@@ -89,11 +89,11 @@ router.delete('/:id', requireAuth,async(req,res) => {
 
     try{
         //call the database
-        const collection = getCollection('applications');
+        const collection = getCollection('adopter');
         //delete record
         const result = await collection.deleteOne({_id: new ObjectId(id)});
         if(result.deletedCount === 0){
-            res.status(400).json({error: 'record not found'});
+            res.status(400).json({error: 'Record not found.'});
         }
         return res.status(200).json({message: 'Record deleted successfully.'});
 

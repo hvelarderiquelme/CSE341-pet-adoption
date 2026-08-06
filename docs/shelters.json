@@ -2,96 +2,152 @@
   "/shelters": {
     "get": {
       "tags": ["Shelters"],
-      "summary": "Get all shelters",
+      "summary": "Get all animal shelters",
+      "description": "Retrieve a standard array of all shelter documents from the database.",
       "responses": {
-        "200": { "description": "List of shelters" },
-        "500": { "description": "Server error" }
+        "200": {
+          "description": "A list of shelters."
+        },
+        "500": {
+          "description": "Database error."
+        }
       }
     },
     "post": {
       "tags": ["Shelters"],
-      "summary": "Create a shelter",
+      "summary": "Create a new shelter profile",
+      "description": "Inserts a new shelter document into the MongoDB collection. Requires authentication.",
       "requestBody": {
         "required": true,
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
-              "required": [
-                "name",
-                "address",
-                "city",
-                "state",
-                "zipCode",
-                "phone",
-                "email",
-                "capacity",
-                "currentAnimals",
-                "acceptingAnimals"
-              ],
+              "required": ["name", "location", "phone", "email", "capacity", "operating_hours"],
               "properties": {
-                "name": { "type": "string" },
-                "address": { "type": "string" },
-                "city": { "type": "string" },
-                "state": { "type": "string" },
-                "zipCode": { "type": "string" },
-                "phone": { "type": "string" },
-                "email": { "type": "string" },
-                "capacity": { "type": "integer" },
-                "currentAnimals": { "type": "integer" },
-                "acceptingAnimals": { "type": "string" }
+                "name": {
+                  "type": "string",
+                  "example": "Hopeful Paws Sanctuary"
+                },
+                "location": {
+                  "type": "object",
+                  "required": ["address", "city", "state", "postal_code"],
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "example": "123 Rescue Way"
+                    },
+                    "city": {
+                      "type": "string",
+                      "example": "Medicine Hat"
+                    },
+                    "state": {
+                      "type": "string",
+                      "example": "AB"
+                    },
+                    "postal_code": {
+                      "type": "string",
+                      "example": "T1A 1A1",
+                      "pattern": "^[A-Z]\\d[A-Z] \\d[A-Z]\\d$"
+                    }
+                  }
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "403-555-0192"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "contact@hopefulpaws.org"
+                },
+                "website": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "https://hopefulpaws.org"
+                },
+                "capacity": {
+                  "type": "integer",
+                  "example": 50
+                },
+                "operating_hours": {
+                  "type": "object",
+                  "required": ["weekday", "weekend"],
+                  "properties": {
+                    "weekday": {
+                      "type": "string",
+                      "example": "09:00 - 17:00"
+                    },
+                    "weekend": {
+                      "type": "string",
+                      "example": "10:00 - 14:00"
+                    }
+                  }
+                }
               }
-            },
-            "example": {
-              "name": "Happy Tails Shelter",
-              "address": "123 Main Street",
-              "city": "Rexburg",
-              "state": "ID",
-              "zipCode": "83440",
-              "phone": "208-555-0142",
-              "email": "info@happytails.example",
-              "capacity": 60,
-              "currentAnimals": 35,
-              "acceptingAnimals": "Yes"
             }
           }
         }
       },
       "responses": {
-        "201": { "description": "Shelter created" },
-        "400": { "description": "Validation failed" },
-        "500": { "description": "Server error" }
+        "201": {
+          "description": "Shelter profile created successfully."
+        },
+        "400": {
+          "description": "Missing required fields or invalid payload parameters."
+        },
+        "401": {
+          "description": "Unauthorized. GitHub login required."
+        },
+        "500": {
+          "description": "Database insertion failed."
+        }
       }
     }
   },
   "/shelters/{id}": {
     "get": {
       "tags": ["Shelters"],
-      "summary": "Get one shelter by ID",
+      "summary": "Get a single shelter by ID",
+      "description": "Search the database for a matching unique shelter _id record.",
       "parameters": [
         {
           "in": "path",
           "name": "id",
           "required": true,
-          "schema": { "type": "string" }
+          "schema": {
+            "type": "string"
+          },
+          "description": "The unique 24-character MongoDB Object ID of the shelter",
+          "example": "6a64f0ae606e759639e9609e"
         }
       ],
       "responses": {
-        "200": { "description": "Shelter found" },
-        "400": { "description": "Invalid shelter ID" },
-        "404": { "description": "Shelter not found" },
-        "500": { "description": "Server error" }
+        "200": {
+          "description": "Shelter object found."
+        },
+        "404": {
+          "description": "Shelter not found."
+        },
+        "500": {
+          "description": "Invalid ID format or server error."
+        }
       }
     },
     "put": {
       "tags": ["Shelters"],
-      "summary": "Update a shelter",
+      "summary": "Update shelter record",
+      "description": "Updates a shelter document in the MongoDB collection. Requires authentication.",
       "parameters": [
         {
           "in": "path",
           "name": "id",
           "required": true,
-          "schema": { "type": "string" }
+          "schema": {
+            "type": "string"
+          },
+          "description": "The unique 24-character MongoDB ObjectId of the shelter",
+          "example": "6a64f0ae606e759639e9609e"
         }
       ],
       "requestBody": {
@@ -100,69 +156,122 @@
           "application/json": {
             "schema": {
               "type": "object",
-              "required": [
-                "name",
-                "address",
-                "city",
-                "state",
-                "zipCode",
-                "phone",
-                "email",
-                "capacity",
-                "currentAnimals",
-                "acceptingAnimals"
-              ],
+              "required": ["name", "location", "phone", "email", "capacity", "operating_hours"],
               "properties": {
-                "name": { "type": "string" },
-                "address": { "type": "string" },
-                "city": { "type": "string" },
-                "state": { "type": "string" },
-                "zipCode": { "type": "string" },
-                "phone": { "type": "string" },
-                "email": { "type": "string" },
-                "capacity": { "type": "integer" },
-                "currentAnimals": { "type": "integer" },
-                "acceptingAnimals": { "type": "string" }
+                "name": {
+                  "type": "string",
+                  "example": "Hopeful Paws Sanctuary"
+                },
+                "location": {
+                  "type": "object",
+                  "required": ["address", "city", "state", "postal_code"],
+                  "properties": {
+                    "address": {
+                      "type": "string",
+                      "example": "123 Rescue Way"
+                    },
+                    "city": {
+                      "type": "string",
+                      "example": "Medicine Hat"
+                    },
+                    "state": {
+                      "type": "string",
+                      "example": "AB"
+                    },
+                    "postal_code": {
+                      "type": "string",
+                      "example": "T1A 1A1",
+                      "pattern": "^[A-Z]\\d[A-Z] \\d[A-Z]\\d$"
+                    }
+                  }
+                },
+                "phone": {
+                  "type": "string",
+                  "example": "403-555-0192"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "example": "contact@hopefulpaws.org"
+                },
+                "website": {
+                  "type": "string",
+                  "format": "uri",
+                  "example": "https://hopefulpaws.org"
+                },
+                "capacity": {
+                  "type": "integer",
+                  "example": 50
+                },
+                "operating_hours": {
+                  "type": "object",
+                  "required": ["weekday", "weekend"],
+                  "properties": {
+                    "weekday": {
+                      "type": "string",
+                      "example": "09:00 - 17:00"
+                    },
+                    "weekend": {
+                      "type": "string",
+                      "example": "10:00 - 14:00"
+                    }
+                  }
+                }
               }
-            },
-            "example": {
-              "name": "Happy Tails Shelter",
-              "address": "123 Main Street",
-              "city": "Rexburg",
-              "state": "ID",
-              "zipCode": "83440",
-              "phone": "208-555-0142",
-              "email": "info@happytails.example",
-              "capacity": 60,
-              "currentAnimals": 35,
-              "acceptingAnimals": "Yes"
             }
           }
         }
       },
       "responses": {
-        "204": { "description": "Shelter updated" },
-        "400": { "description": "Validation failed or invalid shelter ID" },
-        "404": { "description": "Shelter not found" },
-        "500": { "description": "Server error" }
+        "200": {
+          "description": "Shelter updated successfully."
+        },
+        "400": {
+          "description": "Invalid ID format or missing required fields."
+        },
+        "401": {
+          "description": "Unauthorized. GitHub login required."
+        },
+        "500": {
+          "description": "Database update failed."
+        },
+        "204": {
+  "description": "Shelter updated successfully"
+}
       }
     },
     "delete": {
       "tags": ["Shelters"],
-      "summary": "Delete a shelter",
+      "summary": "Delete a shelter record by ID",
+      "description": "Permanently deletes a shelter document from the MongoDB collection. Requires authentication.",
       "parameters": [
         {
           "in": "path",
           "name": "id",
           "required": true,
-          "schema": { "type": "string" }
+          "schema": {
+            "type": "string"
+          },
+          "description": "The unique 24-character MongoDB ObjectId of the shelter to delete",
+          "example": "6a64f0ae606e759639e9609e"
         }
       ],
       "responses": {
-        "204": { "description": "Shelter deleted" },
-        "400": { "description": "Invalid shelter ID" },
-        "404": { "description": "Shelter not found" },
-        "500": { "description": "Server error" }
+        "200": {
+          "description": "Shelter successfully deleted."
+        },
+        "400": {
+          "description": "Invalid ID format."
+        },
+        "401": {
+          "description": "Unauthorized. GitHub login required."
+        },
+        "404": {
+          "description": "Shelter record not found."
+        },
+        "500": {
+          "description": "Database deletion failed."
+        }
       }
     }
   }

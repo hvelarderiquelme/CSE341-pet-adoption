@@ -8,15 +8,19 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const routers = require('./routes/pets');
-const shelterRoutes = require("./routes/shelters");
+
 
 //Modular settings
+const { initAuth } = require('./middleware/auth-setup');
 const { connectDB } = require('./config/db');
 const { setupSwagger } = require('./config/swagger');
 
 //Routes objects
+const authroute = require('./routes/auth');
 const petRoutes = require('./routes/petRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
+const shelterRoutes = require("./routes/shelters");
+const adopterRoutes = require('./routes/adopterRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -26,16 +30,21 @@ const PORT = process.env.PORT || 8080;
 app.use(cors());
 app.use(express.json());
 
+//Initialize authentication modules (session + passport)
+initAuth(app);
 //Initialize documentation modules
 setupSwagger(app);
 
 app.use(cors());
 app.use(express.json());
-app.use("/shelters", shelterRoutes);
+
 
 //Application endpoint mappings
+app.use('/auth', authroute);
 app.use('/pets', petRoutes);
 app.use('/applications', applicationRoutes);
+app.use("/shelters", shelterRoutes);
+app.use('/adopters', adopterRoutes);
 
 app.get('/', (req,res) => {
     res.status(200).json({
