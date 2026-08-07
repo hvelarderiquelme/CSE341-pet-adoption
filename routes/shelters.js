@@ -1,7 +1,7 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const shelters = require("../controllers/shelters");
-// const ensureAuthenticated = require("../middleware/authenticate");
+const { requireAuth } = require("../middleware/requireAuth");
 
 const router = express.Router();
 
@@ -126,7 +126,7 @@ router.get("/:id", shelters.getOne);
  *   post:
  *     summary: Create a shelter
  */
-router.post("/", validateShelter, shelters.create);
+router.post("/", requireAuth, validateShelter, shelters.create);
 
 /**
  * @swagger
@@ -134,7 +134,7 @@ router.post("/", validateShelter, shelters.create);
  *   put:
  *     summary: Update a shelter
  */
-router.put("/:id", validateShelter, shelters.update);
+router.put("/:id", requireAuth,validateShelter, shelters.update);
 
 /**
  * @swagger
@@ -142,6 +142,6 @@ router.put("/:id", validateShelter, shelters.update);
  *   delete:
  *     summary: Delete a shelter
  */
-router.delete("/:id", shelters.remove);
+router.delete("/:id", requireAuth,shelters.remove);
 
 module.exports = router;

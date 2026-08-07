@@ -1,6 +1,7 @@
 const express = require("express");
 const { body, validationResult } = require("express-validator");
 const adopters = require("../controllers/adopters");
+const { requireAuth } = require("../middleware/requireAuth");
 
 const router = express.Router();
 
@@ -81,7 +82,7 @@ const validateAdopter = validate(adopterValidationRules);
  *       200:
  *         description: List of adopters
  */
-router.get("/", adopters.getAll);
+router.get("/",requireAuth, adopters.getAll);
 
 /**
  * @swagger
@@ -100,7 +101,7 @@ router.get("/", adopters.getAll);
  *       404:
  *         description: Adopter not found
  */
-router.get("/:id", adopters.getOne);
+router.get("/:id",requireAuth, adopters.getOne);
 
 /**
  * @swagger
@@ -113,7 +114,7 @@ router.get("/:id", adopters.getOne);
  *       400:
  *         description: Validation failed
  */
-router.post("/", validateAdopter, adopters.create);
+router.post("/", requireAuth,validateAdopter, adopters.create);
 
 /**
  * @swagger
@@ -128,7 +129,7 @@ router.post("/", validateAdopter, adopters.create);
  *       404:
  *         description: Adopter not found
  */
-router.put("/:id", validateAdopter, adopters.update);
+router.put("/:id", requireAuth,validateAdopter, adopters.update);
 
 /**
  * @swagger
@@ -141,7 +142,7 @@ router.put("/:id", validateAdopter, adopters.update);
  *       404:
  *         description: Adopter not found
  */
-router.delete("/:id", adopters.remove);
+router.delete("/:id",requireAuth, adopters.remove);
 
 
 module.exports = router;
