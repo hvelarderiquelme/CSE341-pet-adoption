@@ -1,8 +1,31 @@
 const express = require('express');
 const { ObjectId } = require('mongodb');
+const { body, validationResult } = require('express-validator');
 const { getCollection } = require('../config/db');
 const { requireAuth } = require('../middleware/requireAuth');
 const router = express.Router();
+
+// Data validation for POST/PUT: require the core adopter contact fields.
+const adopterValidationRules = [
+    body('first_name').isString().withMessage('First name must be a string.').bail().trim().notEmpty().withMessage('First name is required.'),
+    body('last_name').isString().withMessage('Last name must be a string.').bail().trim().notEmpty().withMessage('Last name is required.'),
+    body('email').trim().isEmail().withMessage('A valid email is required.'),
+    body('phone').isString().withMessage('Phone must be a string.').bail().trim().notEmpty().withMessage('Phone is required.')
+];
+
+const validateAdopter = async (req, res, next) => {
+    await Promise.all(adopterValidationRules.map((rule) => rule.run(req)));
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            message: 'Validation failed.',
+            errors: errors.array()
+        });
+    }
+
+    return next();
+};
 
 // Endpoint: Get. Get all records
 router.get('/', async (req,res) => {
@@ -38,7 +61,7 @@ router.get('/:id', async(req,res) => {
 });
 
 //Endpoint: POST. Create a new record
-router.post('/', requireAuth,async(req,res) => { 
+router.post('/', requireAuth, validateAdopter, async(req,res) => {
     try{
         //grab all the info
         const adopter = req.body;
@@ -61,7 +84,7 @@ router.post('/', requireAuth,async(req,res) => {
 });
 
 //Endpoint: PUT. Update a record by id
-router.put('/:id', requireAuth,async(req,res) => {
+router.put('/:id', requireAuth, validateAdopter, async(req,res) => {
     //grab the id from the body
     const { id } = req.params;
     try{
